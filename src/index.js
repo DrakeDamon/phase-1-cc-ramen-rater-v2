@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', main);
 
+let currentRamen = null;
+
 function main() {
   fetchRamens();
   addSubmitListener();
@@ -10,11 +12,14 @@ function fetchRamens() {
   fetch('http://localhost:3000/ramens')
     .then(response => response.json())
     .then(ramens => {
+      console.log('Fetched ramens:', ramens); // Debugging: Check fetched data
       ramens.forEach(ramen => addRamenToMenu(ramen));
       if (ramens.length > 0) {
+        console.log('Displaying first ramen:', ramens[0]); // Debugging: Check first ramen
         displayRamenDetails(ramens[0]);
       }
-    });
+    })
+    .catch(error => console.error('Error fetching ramens:', error));
 }
 
 function addRamenToMenu(ramen) {
@@ -40,6 +45,7 @@ function addRamenToMenu(ramen) {
 }
 
 function displayRamenDetails(ramen) {
+  console.log('Displaying ramen details:', ramen); // Debugging: Check ramen details
   document.querySelector('.detail-image').src = ramen.image;
   document.querySelector('.name').textContent = ramen.name;
   document.querySelector('.restaurant').textContent = ramen.restaurant;
@@ -86,5 +92,11 @@ function addEditListener() {
 
     document.getElementById('rating-display').textContent = rating;
     document.getElementById('comment-display').textContent = comment;
+
+    // Update the current ramen's details
+    if (currentRamen) {
+      currentRamen.rating = rating;
+      currentRamen.comment = comment;
+    }
   });
 }
